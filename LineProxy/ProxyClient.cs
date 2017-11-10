@@ -50,7 +50,6 @@ namespace ForwordProxy
                     }
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
-                    var str = Encoding.Default.GetString(bs, 0, read);
 
                     var ret = Encoding.Default.GetString(bs, 0, read);
                     if (!string.IsNullOrEmpty(ret))

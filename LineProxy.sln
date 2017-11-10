@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 15.00
+Microsoft Visual Studio Solution File, Format Version UNKNOWN
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineProxy", "LineProxy\LineProxy.csproj", "{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineProxy.Test", "LineProxy.Test\LineProxy.Test.csproj", "{FB60ACCE-612A-4965-A6B1-91B4EF5E2587}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,5 +23,9 @@ Global
 		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB60ACCE-612A-4965-A6B1-91B4EF5E2587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB60ACCE-612A-4965-A6B1-91B4EF5E2587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB60ACCE-612A-4965-A6B1-91B4EF5E2587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB60ACCE-612A-4965-A6B1-91B4EF5E2587}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

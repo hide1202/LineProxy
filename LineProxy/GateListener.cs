@@ -43,9 +43,9 @@ namespace ForwordProxy
 
                         var read = await stream.ReadAsync(bs, 0, bs.Length);
                         var str = Encoding.Default.GetString(bs, 0, read);
-                        if (IsConnectMethod(str))
+                        if (ConnectMethodVerifier.IsConnectMethod(str))
                         {
-                            var url = ExtractUrl(str);
+                            var url = ConnectMethodVerifier.GetUrlFromConnectMethod(str);
 
                             var isConnect = await CanConnect(url);
                             if (isConnect)
@@ -83,21 +83,6 @@ namespace ForwordProxy
             {
                 kv.Value?.Close();
             }
-        }
-
-        private bool IsConnectMethod(string str)
-        {
-            return str.StartsWith("CONNECT", StringComparison.CurrentCulture);
-        }
-
-        private string ExtractUrl(string connectMethodRequest)
-        {
-            connectMethodRequest = connectMethodRequest.Trim();
-            connectMethodRequest = connectMethodRequest.Replace("CONNECT", ""); // Remove CONNECT method
-            var httpIndex = connectMethodRequest.IndexOf("HTTP/1.1", StringComparison.Ordinal);
-            connectMethodRequest =
-                connectMethodRequest.Substring(0, httpIndex); // Remove HTTP/1.1 string
-            return connectMethodRequest.Trim();
         }
 
         private async Task<bool> CanConnect(string url)
