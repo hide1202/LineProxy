@@ -36,11 +36,19 @@ namespace ForwordProxy
 
         private async void ReceiveFromClient()
         {
+            var failCount = 0;
+
             var bs = new byte[short.MaxValue];
             while (true)
             {
                 try
                 {
+                    if (!_client.Connected)
+                    {
+                        Console.WriteLine("Loss client connection");
+                        return;
+                    }
+
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
                     var str = Encoding.Default.GetString(bs, 0, read);
 
@@ -50,23 +58,33 @@ namespace ForwordProxy
                         await WriteAsync(bs, 0, read);
                     }
 
+                    failCount = 0;
                     ThreadUtil.SleepLoop();
                 }
                 catch (Exception ex)
                 {
+                    failCount++;
                     Console.WriteLine(ex);
+
+                    if (failCount > 5 && !_client.Connected)
+                    {
+                        Console.WriteLine("Disconnect client!");
+                        return;
+                    }
                 }
             }
         }
 
         private async void ReceiveFromOrigin()
         {
+            var failCount = 0;
+
             var bs = new byte[short.MaxValue];
             while (true)
             {
                 if (!_toOriginClient.Connected)
                 {
-                    Console.WriteLine("Loss client connection");
+                    Console.WriteLine("Loss origin client connection");
                     return;
                 }
 
@@ -77,10 +95,18 @@ namespace ForwordProxy
                     {
                         await _toClientStream.WriteAsync(bs, 0, read);
                     }
+                    failCount = 0;
                 }
                 catch (Exception ex)
                 {
+                    failCount++;
                     Console.WriteLine(ex);
+
+                    if (failCount > 5 && !_client.Connected)
+                    {
+                        Console.WriteLine("Disconnect origin server!");
+                        return;
+                    }
                 }
 
                 ThreadUtil.SleepLoop();
