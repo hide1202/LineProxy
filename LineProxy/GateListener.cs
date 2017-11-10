@@ -94,7 +94,7 @@ namespace ForwordProxy
         {
             connectMethodRequest = connectMethodRequest.Trim();
             connectMethodRequest = connectMethodRequest.Replace("CONNECT", ""); // Remove CONNECT method
-            var httpIndex = connectMethodRequest.IndexOf("HTTP/1.1");
+            var httpIndex = connectMethodRequest.IndexOf("HTTP/1.1", StringComparison.Ordinal);
             connectMethodRequest =
                 connectMethodRequest.Substring(0, httpIndex); // Remove HTTP/1.1 string
             return connectMethodRequest.Trim();

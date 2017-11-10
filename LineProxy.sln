@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 15.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineProxy", "LineProxy\LineProxy.csproj", "{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD3D82D5-9AC8-439E-A7E4-E9F7BC553BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3D82D5-9AC8-439E-A7E4-E9F7BC553BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3D82D5-9AC8-439E-A7E4-E9F7BC553BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3D82D5-9AC8-439E-A7E4-E9F7BC553BA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24EF1A79-17F8-4C73-BD2E-F0560B1FA5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24EF1A79-17F8-4C73-BD2E-F0560B1FA5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24EF1A79-17F8-4C73-BD2E-F0560B1FA5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24EF1A79-17F8-4C73-BD2E-F0560B1FA5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
