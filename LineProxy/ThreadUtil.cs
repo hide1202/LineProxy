@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace ForwordProxy
+namespace LineProxy
 {
     public class ThreadUtil
     {

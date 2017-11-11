@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace ForwordProxy
+namespace LineProxy
 {
     internal class ProxyClient
     {
@@ -41,7 +40,7 @@ namespace ForwordProxy
             var bs = new byte[short.MaxValue];
             while (true)
             {
-                try
+                await Awaits.Run(async () =>
                 {
                     if (!_client.Connected)
                     {
@@ -50,7 +49,6 @@ namespace ForwordProxy
                     }
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
-                    var str = Encoding.Default.GetString(bs, 0, read);
 
                     var ret = Encoding.Default.GetString(bs, 0, read);
                     if (!string.IsNullOrEmpty(ret))
@@ -60,8 +58,7 @@ namespace ForwordProxy
 
                     failCount = 0;
                     ThreadUtil.SleepLoop();
-                }
-                catch (Exception ex)
+                }, ex =>
                 {
                     failCount++;
                     Console.WriteLine(ex);
@@ -71,7 +68,7 @@ namespace ForwordProxy
                         Console.WriteLine("Disconnect client!");
                         return;
                     }
-                }
+                });
             }
         }
 
@@ -88,7 +85,8 @@ namespace ForwordProxy
                     return;
                 }
 
-                try
+
+                await Awaits.Run(async () =>
                 {
                     var read = -1;
                     while ((read = await _toOriginRemoteStream.ReadAsync(bs, 0, bs.Length)) > 0)
@@ -96,8 +94,7 @@ namespace ForwordProxy
                         await _toClientStream.WriteAsync(bs, 0, read);
                     }
                     failCount = 0;
-                }
-                catch (Exception ex)
+                }, ex =>
                 {
                     failCount++;
                     Console.WriteLine(ex);
@@ -107,7 +104,7 @@ namespace ForwordProxy
                         Console.WriteLine("Disconnect origin server!");
                         return;
                     }
-                }
+                });
 
                 ThreadUtil.SleepLoop();
             }
