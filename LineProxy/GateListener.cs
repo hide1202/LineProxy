@@ -30,7 +30,7 @@ namespace LineProxy
                 var bs = new byte[short.MaxValue];
                 while (true)
                 {
-                    await Awaits.RunIgnoreException(async () =>
+                    var isSuccess = await Awaits.RunIgnoreException(async () =>
                     {
                         var client = await _listener.AcceptTcpClientAsync();
                         var clientEndPoint = client.Client.RemoteEndPoint;
@@ -68,6 +68,12 @@ namespace LineProxy
                         }
                     });
                     ThreadUtil.SleepLoop();
+
+                    if (!isSuccess)
+                    {
+                        Console.WriteLine("Raise exception when accepting clients");
+                        break;
+                    }
                 }
             });
         }

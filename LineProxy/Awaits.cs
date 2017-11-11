@@ -5,20 +5,22 @@ namespace LineProxy
 {
     public static class Awaits
     {
-        public static async Task RunIgnoreException(Func<Task> action)
+        public static async Task<bool> RunIgnoreException(Func<Task> action)
         {
-            await Run(action, Console.WriteLine);
+            return await Run(action, Console.WriteLine);
         }
 
-        public static async Task Run(Func<Task> action, Action<Exception> onError)
+        public static async Task<bool> Run(Func<Task> action, Action<Exception> onError)
         {
             try
             {
                 await action?.Invoke();
+                return true;
             }
             catch (Exception exception)
             {
                 onError?.Invoke(exception);
+                return false;
             }
         }
 

@@ -40,12 +40,12 @@ namespace LineProxy
             var bs = new byte[short.MaxValue];
             while (true)
             {
-                await Awaits.Run(async () =>
+                var isSuccess = await Awaits.Run(async () =>
                 {
                     if (!_client.Connected)
                     {
                         Console.WriteLine("Loss client connection");
-                        return;
+                        return false;
                     }
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
@@ -58,6 +58,7 @@ namespace LineProxy
 
                     failCount = 0;
                     ThreadUtil.SleepLoop();
+                    return true;
                 }, ex =>
                 {
                     failCount++;
@@ -66,9 +67,12 @@ namespace LineProxy
                     if (failCount > 5 && !_client.Connected)
                     {
                         Console.WriteLine("Disconnect client!");
-                        return;
                     }
+                    return false;
                 });
+
+                if (!isSuccess)
+                    break;
             }
         }
 
@@ -86,7 +90,7 @@ namespace LineProxy
                 }
 
 
-                await Awaits.Run(async () =>
+                var isSuccess = await Awaits.Run(async () =>
                 {
                     var read = -1;
                     while ((read = await _toOriginRemoteStream.ReadAsync(bs, 0, bs.Length)) > 0)
@@ -102,9 +106,11 @@ namespace LineProxy
                     if (failCount > 5 && !_client.Connected)
                     {
                         Console.WriteLine("Disconnect origin server!");
-                        return;
                     }
                 });
+                
+                if (!isSuccess)
+                    break;
 
                 ThreadUtil.SleepLoop();
             }
