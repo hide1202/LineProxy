@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ForwordProxy
+namespace LineProxy
 {
-    public static class ConnectMethodVerifier
+    public static class ConnectMethodHandShake
     {
         private const string Connect = "CONNECT";
         private const string Http1_1 = "HTTP/1.1";
@@ -20,6 +23,13 @@ namespace ForwordProxy
             requestLine =
                 requestLine.Substring(0, httpIndex); // Remove HTTP/1.1 string
             return requestLine.Trim();
+        }
+
+        public static Task SendOk(TcpClient client)
+        {
+            var networkStream = client.GetStream();
+            var ret = Encoding.UTF8.GetBytes("HTTP/1.1 200 OK");
+            return Awaits.RunIgnoreException(async () => { await networkStream.WriteAsync(ret, 0, ret.Length); });
         }
     }
 }

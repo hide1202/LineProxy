@@ -1,5 +1,5 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version UNKNOWN
+Microsoft Visual Studio Solution File, Format Version 15.0
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineProxy", "LineProxy\LineProxy.csproj", "{01C9E2BD-93E0-4B9A-8137-BDD90AFD7F3C}"
 EndProject

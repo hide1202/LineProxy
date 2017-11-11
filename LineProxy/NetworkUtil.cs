@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ForwordProxy
+namespace LineProxy
 {
     internal static class NetworkUtil
     {
