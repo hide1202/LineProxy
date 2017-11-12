@@ -80,11 +80,11 @@ namespace LineProxy
 
         public void Stop()
         {
-            _listener.Stop();
             foreach (var kv in _acceptClients)
             {
                 kv.Value?.Close();
             }
+            _listener.Stop();
         }
 
         private async Task<bool> CanConnect(string url)
@@ -97,13 +97,15 @@ namespace LineProxy
 
                 Console.WriteLine($"Query dns : {url} => {remoteEndPoint}");
 
-                var tryConnectClient = new TcpClient();
-                var connectTask = tryConnectClient.ConnectAsync(remoteEndPoint.Address, remoteEndPoint.Port);
+                using (var tryConnectClient = new TcpClient())
+                {
+                    var connectTask = tryConnectClient.ConnectAsync(remoteEndPoint.Address, remoteEndPoint.Port);
 
-                var isTimeout = await Awaits.IsTimeout(connectTask, TimeSpan.FromSeconds(3));
-                if (isTimeout)
-                    return false;
-                return tryConnectClient.Connected;
+                    var isTimeout = await Awaits.IsTimeout(connectTask, TimeSpan.FromSeconds(3));
+                    if (isTimeout)
+                        return false;
+                    return tryConnectClient.Connected;
+                }
             }, ex =>
             {
                 Console.WriteLine(ex);

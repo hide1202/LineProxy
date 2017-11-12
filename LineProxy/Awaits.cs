@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LineProxy
@@ -19,6 +20,7 @@ namespace LineProxy
             }
             catch (Exception exception)
             {
+                Console.WriteLine(exception);
                 onError?.Invoke(exception);
                 return false;
             }
@@ -38,7 +40,12 @@ namespace LineProxy
 
         public static async Task<bool> IsTimeout(Task task, TimeSpan timeout)
         {
-            var any = await Task.WhenAny(task, Task.Delay(timeout));
+            var cancel = new CancellationTokenSource();
+            var any = await Task.WhenAny(task, Task.Delay(timeout, cancel.Token));
+            if (any != task)
+            {
+                cancel.Cancel();
+            }
             return any != task;
         }
     }

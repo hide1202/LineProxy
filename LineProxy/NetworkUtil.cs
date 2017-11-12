@@ -12,23 +12,15 @@ namespace LineProxy
             var domainAndPort = urlAndPort.Split(":");
             var hostEntryAsync = Dns.GetHostEntryAsync(domainAndPort[0]);
 
-            var timeoutSrc = new CancellationTokenSource();
-            try
+            return await Awaits.Run(async () =>
             {
-                var task = await Task.WhenAny(hostEntryAsync, Task.Delay(TimeSpan.FromSeconds(3), timeoutSrc.Token));
-                if (task == hostEntryAsync)
-                {
-                    timeoutSrc.Cancel();
-                    var entry = hostEntryAsync.Result;
-                    Console.WriteLine(entry.AddressList[0]);
-                    return new IPEndPoint(entry.AddressList[0], int.Parse(domainAndPort[1]));
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            return null;
+                var isTimeout = await Awaits.IsTimeout(hostEntryAsync, TimeSpan.FromSeconds(3));
+                if (isTimeout) return null;
+
+                var entry = hostEntryAsync.Result;
+                Console.WriteLine(entry.AddressList[0]);
+                return new IPEndPoint(entry.AddressList[0], int.Parse(domainAndPort[1]));
+            }, ex => null);
         }
     }
 }
