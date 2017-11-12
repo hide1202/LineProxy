@@ -1,11 +1,22 @@
 ﻿using System;
+using System.IO;
+using LineProxy.Log;
+using Microsoft.Extensions.Configuration;
 
 namespace LineProxy
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
+            AppSettings.Load();
+
+            Logger.AzureTracker.SendEvent(TrackType.ApplicationRun);
+            Console.WriteLine("Application : {0}",
+                AppSettings.Current.ApplicationName);
+
+            Console.WriteLine(AppSettings.Current.Azure);
+
             var listener = new GateListener(8081);
 
             try
