@@ -12,4 +12,10 @@
         Send,
         FailToSend
     }
+
+    public enum MetricType
+    {
+        SendBytes,
+        ReceiveBytes,
+    }
 }

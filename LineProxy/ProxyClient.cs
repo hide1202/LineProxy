@@ -52,7 +52,7 @@ namespace LineProxy
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
 
-                    Logger.AzureTracker.SendEvent(TrackType.Receive);
+                    Logger.AzureTracker.SendEventWithMetrics(TrackType.Receive, (MetricType.ReceiveBytes, read));
 
                     var ret = Encoding.Default.GetString(bs, 0, read);
                     if (!string.IsNullOrEmpty(ret))
@@ -98,14 +98,17 @@ namespace LineProxy
 
                 var isSuccess = await Awaits.Run(async () =>
                 {
+                    var sendBytes = 0;
+
                     var read = -1;
                     while ((read = await _toOriginRemoteStream.ReadAsync(bs, 0, bs.Length)) > 0)
                     {
                         await _toClientStream.WriteAsync(bs, 0, read);
+                        sendBytes += read;
                     }
                     failCount = 0;
 
-                    Logger.AzureTracker.SendEvent(TrackType.Send);
+                    Logger.AzureTracker.SendEventWithMetrics(TrackType.Send, (MetricType.SendBytes, sendBytes));
                 }, ex =>
                 {
                     failCount++;
