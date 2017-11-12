@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using LineProxy.Log;
+using LineProxy.Tracker;
 
 namespace LineProxy
 {
@@ -54,7 +54,7 @@ namespace LineProxy
                             if (isConnect)
                             {
                                 Console.WriteLine("Success to connect!");
-                                await Logger.AzureTracker.SendEvent(TrackType.Connect);
+                                Logger.AzureTracker.SendEvent(TrackType.Connect);
 
                                 await ConnectMethodHandShake.SendOk(client);
 
@@ -66,7 +66,7 @@ namespace LineProxy
                             else
                             {
                                 Console.WriteLine("Fail to connect!");
-                                await Logger.AzureTracker.SendEvent(TrackType.FailToConnect);
+                                Logger.AzureTracker.SendEvent(TrackType.FailToConnect);
                             }
                         }
                     });

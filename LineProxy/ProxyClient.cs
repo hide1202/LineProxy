@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using LineProxy.Log;
+using LineProxy.Tracker;
 
 namespace LineProxy
 {
@@ -46,13 +46,13 @@ namespace LineProxy
                     if (!_client.Connected)
                     {
                         Console.WriteLine("Loss client connection");
-                        await Logger.AzureTracker.SendEvent(TrackType.DisconnectClient);
+                        Logger.AzureTracker.SendEvent(TrackType.DisconnectClient);
                         return false;
                     }
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
 
-                    await Logger.AzureTracker.SendEvent(TrackType.Receive);
+                    Logger.AzureTracker.SendEvent(TrackType.Receive);
 
                     var ret = Encoding.Default.GetString(bs, 0, read);
                     if (!string.IsNullOrEmpty(ret))
@@ -67,12 +67,12 @@ namespace LineProxy
                 {
                     failCount++;
                     Console.WriteLine(ex);
-                    Logger.AzureTracker.SendEvent(TrackType.FailToReceive).Wait();
+                    Logger.AzureTracker.SendEvent(TrackType.FailToReceive);
 
                     if (failCount > 5 && !_client.Connected)
                     {
                         Console.WriteLine("Disconnect client!");
-                        Logger.AzureTracker.SendEvent(TrackType.DisconnectClient).Wait();
+                        Logger.AzureTracker.SendEvent(TrackType.DisconnectClient);
                     }
                     return false;
                 });
@@ -105,7 +105,7 @@ namespace LineProxy
                     }
                     failCount = 0;
 
-                    await Logger.AzureTracker.SendEvent(TrackType.Send);
+                    Logger.AzureTracker.SendEvent(TrackType.Send);
                 }, ex =>
                 {
                     failCount++;
@@ -114,7 +114,7 @@ namespace LineProxy
                     if (failCount > 5 && !_client.Connected)
                     {
                         Console.WriteLine("Disconnect origin server!");
-                        Logger.AzureTracker.SendEvent(TrackType.DisconnectOrigin).Wait();
+                        Logger.AzureTracker.SendEvent(TrackType.DisconnectOrigin);
                     }
                 });
 
@@ -134,7 +134,7 @@ namespace LineProxy
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                Logger.AzureTracker.SendEvent(TrackType.FailToSend).Wait();
+                Logger.AzureTracker.SendEvent(TrackType.FailToSend);
             }
         }
     }

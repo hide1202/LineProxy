@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using LineProxy.Log;
+using LineProxy.Tracker;
 using Microsoft.Extensions.Configuration;
 
 namespace LineProxy
