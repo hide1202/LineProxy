@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,13 @@ namespace LineProxy
         private readonly NetworkStream _toOriginRemoteStream;
         private readonly NetworkStream _toClientStream;
 
-        public static ProxyClient NewClient(TcpClient client, string url)
+        public static ProxyClient NewClient(TcpClient client, IPEndPoint remoteEndPoint)
         {
-            return new ProxyClient(client, url);
+            return new ProxyClient(client, remoteEndPoint);
         }
 
-        private ProxyClient(TcpClient client, string url)
+        private ProxyClient(TcpClient client, IPEndPoint remoteEndPoint)
         {
-            var remoteEndPoint = NetworkUtil.QueryDnsEntry(url).Result;
-            Console.WriteLine("Remote Address : {0}", remoteEndPoint.Address);
-
             _toOriginClient = new TcpClient();
             _toOriginClient.Connect(remoteEndPoint.Address, remoteEndPoint.Port);
 
@@ -51,8 +49,6 @@ namespace LineProxy
                     }
 
                     var read = await _toClientStream.ReadAsync(bs, 0, bs.Length);
-
-                    Logger.AzureTracker.SendEventWithMetrics(TrackType.Receive, (MetricType.ReceiveBytes, read));
 
                     var ret = Encoding.Default.GetString(bs, 0, read);
                     if (!string.IsNullOrEmpty(ret))
@@ -107,8 +103,6 @@ namespace LineProxy
                         sendBytes += read;
                     }
                     failCount = 0;
-
-                    Logger.AzureTracker.SendEventWithMetrics(TrackType.Send, (MetricType.SendBytes, sendBytes));
                 }, ex =>
                 {
                     failCount++;

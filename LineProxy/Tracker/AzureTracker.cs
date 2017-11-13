@@ -31,15 +31,5 @@ namespace LineProxy.Tracker
                 _client.Flush();
             });
         }
-
-        public void SendEventWithMetrics(TrackType type, params (MetricType k, double v)[] metricParams)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                var metrics = metricParams.ToDictionary(m => m.k.ToString(), m => m.v);
-                _client.TrackEvent(type.ToString(), metrics: metrics);
-                _client.Flush();
-            });
-        }
     }
 }

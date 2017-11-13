@@ -50,15 +50,15 @@ namespace LineProxy
                         {
                             var url = ConnectMethodHandShake.GetUrlFromConnectMethod(str);
 
-                            var isConnect = await CanConnect(url);
-                            if (isConnect)
+                            var canConnect = await CanConnect(url);
+                            if (canConnect.isSuccess)
                             {
                                 Console.WriteLine("Success to connect!");
                                 Logger.AzureTracker.SendEvent(TrackType.Connect);
 
                                 await ConnectMethodHandShake.SendOk(client);
 
-                                var proxy = ProxyClient.NewClient(client, url);
+                                var proxy = ProxyClient.NewClient(client, canConnect.ip);
 
                                 _proxies.AddOrUpdate(clientEndPoint, proxy,
                                     (point, proxyClient) => proxy);
@@ -90,29 +90,31 @@ namespace LineProxy
             _listener.Stop();
         }
 
-        private async Task<bool> CanConnect(string url)
+        private async Task<(bool isSuccess, IPEndPoint ip)> CanConnect(string url)
         {
             return await Awaits.Run(async () =>
             {
-                var remoteEndPoint = await NetworkUtil.QueryDnsEntry(url);
-                if (remoteEndPoint == null)
-                    return false;
-
-                Console.WriteLine($"Query dns : {url} => {remoteEndPoint}");
+                var remoteEndPoints = await NetworkUtil.QueryDnsEntry(url);
+                if (remoteEndPoints == null)
+                    return (false, null);
 
                 using (var tryConnectClient = new TcpClient())
                 {
-                    var connectTask = tryConnectClient.ConnectAsync(remoteEndPoint.Address, remoteEndPoint.Port);
+                    foreach (var ep in remoteEndPoints)
+                    {
+                        var connectTask = tryConnectClient.ConnectAsync(ep.Address, ep.Port);
 
-                    var isTimeout = await Awaits.IsTimeout(connectTask, TimeSpan.FromSeconds(3));
-                    if (isTimeout)
-                        return false;
-                    return tryConnectClient.Connected;
+                        var isTimeout = await Awaits.IsTimeout(connectTask, TimeSpan.FromSeconds(10));
+                        if (!isTimeout)
+                            return (true, ep);
+                    }
+
+                    return (false, null);
                 }
             }, ex =>
             {
                 Console.WriteLine(ex);
-                return false;
+                return (false, null);
             });
         }
     }
