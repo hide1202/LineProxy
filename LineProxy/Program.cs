@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using LineProxy.Tracker;
 using Microsoft.Extensions.Configuration;
 
@@ -28,7 +29,11 @@ namespace LineProxy
                 Console.WriteLine(ex);
             }
 
-            Console.ReadKey();
+            // Console.ReadKey();
+            while(true)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
 
             listener.Stop();
         }

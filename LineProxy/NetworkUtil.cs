@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace LineProxy
@@ -11,7 +10,7 @@ namespace LineProxy
     {
         internal static async Task<List<IPEndPoint>> QueryDnsEntry(string urlAndPort)
         {
-            var domainAndPort = urlAndPort.Split(":");
+            var domainAndPort = urlAndPort.Split(':');
             var hostEntryAsync = Dns.GetHostEntryAsync(domainAndPort[0]);
 
             return await Awaits.Run(async () =>
